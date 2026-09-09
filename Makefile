@@ -21,7 +21,7 @@ LDFLAGS    := $(ARCH_FLAGS) -ffreestanding -nostdlib -nostartfiles \
 HOST_REPO ?= ..
 EXPORT_BIN := $(HOST_REPO)/guest_images/demo.bin
 
-.PHONY: all clean inspect export
+.PHONY: all clean inspect export upload monitor
 
 all: $(BIN) $(DUMP)
 	$(SIZE) $(ELF)
@@ -46,6 +46,14 @@ inspect: all
 export: all
 	mkdir -p $(dir $(EXPORT_BIN))
 	cp $(BIN) $(EXPORT_BIN)
+
+# demo.bin is guest machine code, not an AVR firmware image.  Export it into
+# the host repository, let the host build embed it, then upload that firmware.
+upload: export
+	$(MAKE) -C $(HOST_REPO) upload
+
+monitor:
+	$(MAKE) -C $(HOST_REPO) monitor
 
 clean:
 	rm -rf $(BUILD_DIR)

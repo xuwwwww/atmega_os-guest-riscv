@@ -15,6 +15,17 @@ make
 make inspect
 ```
 
+To rebuild the guest, embed it in the AVR host firmware, and upload everything
+to the board connected as the host repository's configured port:
+
+```bash
+make upload
+```
+
+This is a convenience pipeline. `demo.bin` is not passed directly to
+`avrdude`; the parent ATmega OS build converts it into a Flash `PROGMEM` image,
+then uploads the complete AVR `.hex` firmware.
+
 Important build constraints:
 
 - `-march=rv32i`: do not emit compressed or multiply/divide instructions.
