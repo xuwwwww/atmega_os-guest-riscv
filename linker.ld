@@ -3,7 +3,7 @@ ENTRY(_start)
 
 MEMORY
 {
-    GUEST (rwx) : ORIGIN = 0, LENGTH = 64
+    GUEST (rwx) : ORIGIN = 0, LENGTH = 192
 }
 
 SECTIONS
@@ -27,5 +27,8 @@ SECTIONS
     }
 }
 
-ASSERT(SIZEOF(.text) + SIZEOF(.rodata) + SIZEOF(.data) + SIZEOF(.bss) <= 64,
-       "guest image exceeds the 64-byte emulator memory")
+__guest_image_end = ADDR(.bss) + SIZEOF(.bss);
+__guest_stack_top = ORIGIN(GUEST) + LENGTH(GUEST);
+
+ASSERT(__guest_image_end <= 160,
+       "guest image leaves less than 32 bytes for its stack")

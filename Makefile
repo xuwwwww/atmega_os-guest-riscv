@@ -11,9 +11,12 @@ TARGET    := $(BUILD_DIR)/demo
 ELF       := $(TARGET).elf
 BIN       := $(TARGET).bin
 DUMP      := $(TARGET).lst
-SRC       := src/demo.S
+SRC       := src/start.S src/main.c
 
 ARCH_FLAGS := -march=rv32i -mabi=ilp32
+CFLAGS     := $(ARCH_FLAGS) -std=c11 -Os -Wall -Wextra -Werror \
+	-ffreestanding -fno-builtin -fno-stack-protector \
+	-ffunction-sections -fdata-sections
 ASFLAGS    := $(ARCH_FLAGS) -ffreestanding -nostdlib -nostartfiles
 LDFLAGS    := $(ARCH_FLAGS) -ffreestanding -nostdlib -nostartfiles \
 	-Wl,--gc-sections,-Map=$(TARGET).map,-T,linker.ld
@@ -30,11 +33,11 @@ $(BUILD_DIR):
 	mkdir -p $@
 
 $(ELF): $(SRC) linker.ld | $(BUILD_DIR)
-	$(CC) $(ASFLAGS) $(LDFLAGS) $(SRC) -o $@
+	$(CC) $(CFLAGS) $(ASFLAGS) $(LDFLAGS) $(SRC) -o $@
 
 $(BIN): $(ELF)
 	$(OBJCOPY) -O binary $< $@
-	test "$$(stat -c %s $@)" -le 64
+	test "$$(stat -c %s $@)" -le 192
 
 $(DUMP): $(ELF)
 	$(OBJDUMP) -d -M no-aliases,numeric $< > $@
