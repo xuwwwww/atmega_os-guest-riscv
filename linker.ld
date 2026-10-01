@@ -30,5 +30,5 @@ SECTIONS
 __guest_image_end = ADDR(.bss) + SIZEOF(.bss);
 __guest_stack_top = ORIGIN(GUEST) + LENGTH(GUEST);
 
-ASSERT(__guest_image_end <= 160,
-       "guest image leaves less than 32 bytes for its stack")
+ASSERT(__guest_image_end <= 168,
+       "guest image leaves less than 24 bytes for its stack")

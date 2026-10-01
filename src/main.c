@@ -12,7 +12,7 @@ static __attribute__((noinline)) uint32_t add(uint32_t left, uint32_t right)
 
 int main(void)
 {
-    volatile uint32_t left = 20u;
+    volatile uint32_t left = 40u;
     volatile uint32_t right = 22u;
 
     guest_write(start_message, sizeof(start_message) - 1u);
